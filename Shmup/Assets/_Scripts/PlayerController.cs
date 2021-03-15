@@ -12,18 +12,20 @@ public class PlayerController : SteerableBehaviour, IShooter, IDamageable
     public float shootDelay = 0.5f;
     private float _lastShootTimestamp = 0.0f;
 
-    private int lifes;
-
+    Vector3 startPos;
 
     public AudioClip shootSFX;
 
+    GameManager gm;
     
     
-
     private void Start()
     {
        animator = GetComponent<Animator>();
-       lifes=10;
+    
+      gm = GameManager.GetInstance();
+
+      startPos = this.transform.position;
        
     }
 
@@ -37,14 +39,19 @@ public class PlayerController : SteerableBehaviour, IShooter, IDamageable
 
     public void TakeDamage()
     {
-       lifes--;
-       if (lifes <= 0) Die();
-       print(lifes);
+       gm.lifes--;
+       if (gm.lifes <= 0) Die();
+      //  print(gm.lifes);
+       
     }
 
     public void Die()
     {
-        Destroy(gameObject);
+        // Destroy(gameObject);
+        if(gm.gameState == GameManager.GameState.GAME)
+       {
+          gm.ChangeState(GameManager.GameState.ENDGAME);
+       }
     }
 
     void FixedUpdate()
@@ -65,18 +72,33 @@ public class PlayerController : SteerableBehaviour, IShooter, IDamageable
         {
            Shoot();
         }
+        if(Input.GetKeyDown(KeyCode.Escape) && gm.gameState == GameManager.GameState.GAME) {
+           gm.ChangeState(GameManager.GameState.PAUSE);
+        }
+        if(gm.gameState == GameManager.GameState.MENU) {
+
+           this.transform.position = startPos; 
+            
+        }
+
+        if (gm.gameState != GameManager.GameState.GAME) return;
+          
     }    
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Inimigos"))
         {
+            // gm.acerto_nave = 100;
             Destroy(collision.gameObject);
-            print("colidiu");
             TakeDamage();
+            
         }
     }
 
+   public void restart(){
 
-    
+      this.transform.position = startPos; 
+      print("restartttttt");
+   }  
 }

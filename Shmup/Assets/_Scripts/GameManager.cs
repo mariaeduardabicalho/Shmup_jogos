@@ -8,8 +8,17 @@ public class GameManager
    public enum GameState { MENU, GAME, PAUSE, ENDGAME };
 
    public GameState gameState { get; private set; }
-   public int vidas;
+   public int lifes;
    public int pontos;
+   public int acerto_nave;
+
+   public delegate void ChangeStateDelegate();
+   public static ChangeStateDelegate changeStateDelegate;
+
+   public string EnemyName;
+
+   PlayerController pc;
+   EnemyController ec;
 
    public static GameManager GetInstance()
    {
@@ -22,9 +31,28 @@ public class GameManager
    }
    private GameManager()
    {
-       vidas = 10;
+       lifes = 10;
        pontos = 0;
-       gameState = GameState.GAME;
+       acerto_nave=0;
+       EnemyName=" ";
+       gameState = GameState.MENU;
 
    }
+   public void ChangeState(GameState nextState)
+{
+   if (nextState == GameState.GAME) Reset();
+   gameState = nextState;
+   changeStateDelegate();
+}
+
+private void Reset()
+{
+   lifes = 10;
+   pontos = 0;
+//    if(gameState == )
+//    pc.restart();
+//    ec.restart();
+
+}   
+
 }

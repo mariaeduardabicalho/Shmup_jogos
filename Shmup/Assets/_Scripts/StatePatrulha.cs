@@ -7,9 +7,9 @@ public class StatePatrulha: State
    SteerableBehaviour steerable;
 
    float angle = 0;
-   public void Update()
+   public override void  Update()
    {
-       angle += 0.1f * Time.deltaTime;
+       angle += 0.1f ;
        Mathf.Clamp(angle, 0.0f, 2.0f * Mathf.PI);
        float x = Mathf.Sin(angle);
        float y = Mathf.Cos(angle);
@@ -33,4 +33,6 @@ public class StatePatrulha: State
 
        steerable = GetComponent<SteerableBehaviour>();
    }
+   
+    
 }
